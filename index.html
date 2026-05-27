@@ -1,0 +1,1005 @@
+<!--
+  ARCHETYPE: Serene Zen Spa
+  KEY STRUCTURAL DECISIONS:
+  - Nav: left-anchored wordmark + right minimal links, no hamburger on desktop; sticky with subtle border-bottom on scroll
+  - Hero: full-viewport split layout — left column has headline + subtext + CTA stacked vertically, right column is an asymmetric photo collage (no dark overlay); NO centered hero
+  - About: horizontal band with large pull-quote on left, dense prose on right, an inset photo bleeding off-edge
+  - Services: vertical accordion-style list with leaf-dividers — NOT a 3-column icon grid
+  - Testimonies: horizontal scroll of tall narrow cards with quote mark as large background glyph, first name + last initial only, NO stars
+  - Hours + Map: two-column with hours as a typographic list on left, keyless Google Maps iframe on right
+  - CTA: a full-width earthy banner mid-page (not just a button)
+  - Footer: minimal two-line footer with social links as text
+  - Animation: subtle single entrance reveal on hero only; everything else static
+  - Palette: sage green (#6B8F71), eucalyptus (#3D6B56), warm stone (#C4A882), cream (#F5F0E8), deep bark (#2C2416)
+  - Type: "Cormorant Garamond" (headings, gentle serif) + "DM Sans" (body, humanist sans)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tina Nails &amp; Spa — Glendale, CA</title>
+  <meta name="description" content="Tina Nails & Spa in Glendale, CA — a private, serene nail salon offering expert nail care in a calm, one-on-one setting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      background: #F5F0E8;
+      color: #2C2416;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── TOKENS ───────────────────────────────────────────────── */
+    :root {
+      --sage:    #6B8F71;
+      --eu:      #3D6B56;
+      --stone:   #C4A882;
+      --cream:   #F5F0E8;
+      --bark:    #2C2416;
+      --bark-lt: #4A3C28;
+      --mist:    #EAE6DC;
+      --border:  rgba(44,36,22,0.12);
+    }
+
+    /* ── TYPOGRAPHY ───────────────────────────────────────────── */
+    h1,h2,h3,h4 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; line-height: 1.15; }
+    h1 { font-size: clamp(2.8rem, 6vw, 5.2rem); letter-spacing: -0.01em; }
+    h2 { font-size: clamp(1.9rem, 3.5vw, 3rem); letter-spacing: -0.01em; }
+    h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 300; }
+    p  { font-size: 1rem; color: var(--bark-lt); }
+
+    /* ── UTILITY ──────────────────────────────────────────────── */
+    .u-italic  { font-style: italic; }
+    .u-sage    { color: var(--sage); }
+    .u-stone   { color: var(--stone); }
+    .container { width: min(90%, 1160px); margin-inline: auto; }
+
+    /* ── CTA BUTTON ───────────────────────────────────────────── */
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      background: var(--eu);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    .btn:hover { background: var(--bark); }
+    .btn--outline {
+      background: transparent;
+      border: 1.5px solid var(--cream);
+      color: var(--cream);
+    }
+    .btn--outline:hover { background: var(--cream); color: var(--bark); }
+
+    /* ── LEAF DIVIDER ─────────────────────────────────────────── */
+    .leaf-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin-block: 1rem;
+    }
+    .leaf-divider::before,
+    .leaf-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .leaf-divider span {
+      font-size: 1.1rem;
+      color: var(--sage);
+      opacity: 0.7;
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* NAV                                                        */
+    /* ══════════════════════════════════════════════════════════ */
+    #site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.1rem 0;
+      background: var(--cream);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #site-nav.scrolled {
+      border-color: var(--border);
+      box-shadow: 0 2px 16px rgba(44,36,22,0.06);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-wordmark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--eu);
+    }
+    .nav-wordmark span { font-weight: 300; font-style: italic; color: var(--bark); }
+    .nav-links {
+      display: flex; gap: 2.2rem; list-style: none;
+      font-size: 0.82rem; letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .nav-links a {
+      color: var(--bark-lt);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--eu); }
+    .nav-cta {
+      font-size: 0.82rem; letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+      background: var(--sage);
+      color: var(--cream);
+      transition: background 0.25s;
+    }
+    .nav-cta:hover { background: var(--eu); }
+
+    /* Mobile nav */
+    .nav-toggle {
+      display: none;
+      flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .nav-toggle span {
+      width: 24px; height: 1.5px;
+      background: var(--bark);
+      display: block;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .nav-mobile {
+      display: none;
+      flex-direction: column;
+      padding: 1.2rem 0 1.5rem;
+      gap: 1rem;
+      border-top: 1px solid var(--border);
+      margin-top: 0.8rem;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      font-size: 1rem; color: var(--bark-lt);
+      padding: 0.3rem 0;
+      letter-spacing: 0.04em;
+    }
+    .nav-mobile a:hover { color: var(--eu); }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* HERO — SPLIT LAYOUT                                        */
+    /* ══════════════════════════════════════════════════════════ */
+    #hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px; /* nav offset */
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6rem 4rem 6rem 5vw;
+      background: var(--cream);
+    }
+    .hero-kicker {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 1.4rem;
+    }
+    .hero-left h1 { color: var(--bark); margin-bottom: 1.4rem; }
+    .hero-left h1 em { color: var(--eu); font-style: italic; }
+    .hero-tagline {
+      font-size: 1.05rem;
+      color: var(--bark-lt);
+      max-width: 38ch;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .hero-note {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--stone);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-right {
+      position: relative;
+      background: var(--mist);
+      display: grid;
+      grid-template-rows: 58% 42%;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .hero-photo {
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .hero-photo:hover img { transform: scale(1.04); }
+    .hero-photo--main {
+      grid-column: 1 / 3;
+    }
+    .hero-badge {
+      position: absolute;
+      bottom: 1.2rem; right: 1.2rem;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(6px);
+      padding: 0.7rem 1.1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: var(--eu);
+      font-style: italic;
+      pointer-events: none;
+    }
+
+    /* Hero entrance */
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-left > * {
+      animation: heroReveal 0.9s ease forwards;
+      opacity: 0;
+    }
+    .hero-left .hero-kicker  { animation-delay: 0.1s; }
+    .hero-left h1            { animation-delay: 0.25s; }
+    .hero-left .hero-tagline { animation-delay: 0.4s; }
+    .hero-left .hero-actions { animation-delay: 0.55s; }
+    .hero-left .hero-note    { animation-delay: 0.7s; }
+
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 5rem 1.5rem 3rem; }
+      .hero-right {
+        height: 55vw; min-height: 300px;
+        grid-template-rows: 60% 40%;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* ABOUT                                                      */
+    /* ══════════════════════════════════════════════════════════ */
+    #about {
+      background: var(--eu);
+      color: var(--cream);
+      padding: 6rem 0;
+      overflow: hidden;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-pull {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--stone);
+      border-left: 2px solid var(--stone);
+      padding-left: 1.8rem;
+    }
+    .about-body h2 { color: var(--cream); margin-bottom: 1.2rem; }
+    .about-body p  { color: rgba(245,240,232,0.8); margin-bottom: 1rem; }
+    .about-photo {
+      width: calc(100% + 4vw);
+      margin-right: -4vw;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-photo { width: 100%; margin-right: 0; }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* SERVICES — vertical accordion list                         */
+    /* ══════════════════════════════════════════════════════════ */
+    #services {
+      padding: 7rem 0;
+      background: var(--cream);
+    }
+    .services-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 3.5rem;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .services-header h2 { max-width: 22ch; }
+    .services-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--sage);
+      max-width: 30ch;
+      text-align: right;
+    }
+    .service-list { list-style: none; }
+    .service-item {
+      border-top: 1px solid var(--border);
+      padding: 1.6rem 0;
+      display: grid;
+      grid-template-columns: 2fr 1.2fr auto;
+      gap: 1rem 2rem;
+      align-items: start;
+      cursor: default;
+      transition: background 0.2s;
+    }
+    .service-item:last-child { border-bottom: 1px solid var(--border); }
+    .service-item:hover { background: var(--mist); margin-inline: -1.5rem; padding-inline: 1.5rem; }
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      color: var(--bark);
+      font-weight: 400;
+    }
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--bark-lt);
+      line-height: 1.5;
+      margin-top: 0.3rem;
+    }
+    .service-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--eu);
+      white-space: nowrap;
+      font-style: italic;
+    }
+    .service-tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage);
+      background: rgba(107,143,113,0.12);
+      padding: 0.25rem 0.6rem;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    @media (max-width: 600px) {
+      .service-item { grid-template-columns: 1fr auto; }
+      .service-tag { display: none; }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* MID-PAGE CTA BAND                                          */
+    /* ══════════════════════════════════════════════════════════ */
+    #cta-band {
+      background: var(--stone);
+      padding: 5rem 0;
+    }
+    .cta-band-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .cta-band-text h2 {
+      color: var(--bark);
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      margin-bottom: 0.5rem;
+    }
+    .cta-band-text p { color: var(--bark-lt); font-size: 1rem; }
+    .cta-band-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn--bark {
+      background: var(--bark);
+      color: var(--cream);
+    }
+    .btn--bark:hover { background: var(--eu); }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* GALLERY STRIP                                              */
+    /* ══════════════════════════════════════════════════════════ */
+    #gallery {
+      background: var(--mist);
+      padding: 0;
+      overflow: hidden;
+    }
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 340px;
+    }
+    .gallery-cell {
+      overflow: hidden;
+      position: relative;
+    }
+    .gallery-cell img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-cell:hover img { transform: scale(1.06); }
+    @media (max-width: 600px) {
+      .gallery-strip { grid-template-columns: 1fr 1fr; height: 240px; }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* TESTIMONIES — horizontal scroll of tall cards              */
+    /* ══════════════════════════════════════════════════════════ */
+    #testimonies {
+      background: var(--cream);
+      padding: 7rem 0;
+    }
+    .test-header { margin-bottom: 3rem; }
+    .test-header h2 { margin-bottom: 0.5rem; }
+    .test-header p { font-style: italic; color: var(--sage); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .test-scroll-wrap {
+      overflow-x: auto;
+      padding-bottom: 1.2rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--stone) var(--mist);
+    }
+    .test-scroll-wrap::-webkit-scrollbar { height: 4px; }
+    .test-scroll-wrap::-webkit-scrollbar-track { background: var(--mist); }
+    .test-scroll-wrap::-webkit-scrollbar-thumb { background: var(--stone); }
+    .test-track {
+      display: flex;
+      gap: 1.2rem;
+      padding-block: 0.5rem;
+      width: max-content;
+    }
+    .test-card {
+      width: 300px;
+      background: var(--mist);
+      padding: 2.2rem 2rem 1.8rem;
+      position: relative;
+      flex-shrink: 0;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .test-card::before {
+      content: '\201C';
+      position: absolute;
+      top: -0.6rem; left: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      line-height: 1;
+      color: var(--sage);
+      opacity: 0.15;
+      pointer-events: none;
+      user-select: none;
+    }
+    .test-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.65;
+      color: var(--bark);
+      margin-bottom: 1.4rem;
+      position: relative; z-index: 1;
+    }
+    .test-attr {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--eu);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* HOURS & LOCATION                                           */
+    /* ══════════════════════════════════════════════════════════ */
+    #location {
+      background: var(--eu);
+      color: var(--cream);
+      padding: 7rem 0;
+    }
+    .loc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .loc-left h2 { color: var(--cream); margin-bottom: 2rem; }
+    .loc-address {
+      font-size: 1rem;
+      color: rgba(245,240,232,0.75);
+      margin-bottom: 0.4rem;
+    }
+    .loc-phone {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--stone);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+      display: block;
+    }
+    .hours-table { border-collapse: collapse; width: 100%; }
+    .hours-table tr td {
+      padding: 0.5rem 0;
+      font-size: 0.92rem;
+      border-bottom: 1px solid rgba(245,240,232,0.1);
+    }
+    .hours-table tr:last-child td { border-bottom: none; }
+    .hours-table .day { color: rgba(245,240,232,0.6); width: 45%; }
+    .hours-table .time { color: var(--cream); }
+    .loc-social {
+      margin-top: 2rem;
+    }
+    .loc-social-label {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 0.7rem;
+    }
+    .loc-social-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .loc-social-links a {
+      font-size: 0.85rem; letter-spacing: 0.06em;
+      color: rgba(245,240,232,0.7);
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(245,240,232,0.25);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .loc-social-links a:hover { color: var(--cream); border-color: var(--stone); }
+
+    .map-frame {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border: none;
+      filter: sepia(20%) contrast(95%);
+    }
+
+    @media (max-width: 768px) {
+      .loc-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .map-frame { aspect-ratio: 3/2; }
+    }
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* FOOTER                                                     */
+    /* ══════════════════════════════════════════════════════════ */
+    #footer {
+      background: var(--bark);
+      color: rgba(245,240,232,0.5);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: rgba(245,240,232,0.4);
+      font-style: italic;
+    }
+    .footer-credit {
+      font-size: 0.8rem;
+      text-align: right;
+    }
+    .footer-credit a {
+      color: var(--stone);
+      border-bottom: 1px solid rgba(196,168,130,0.35);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-credit a:hover { color: var(--cream); border-color: var(--stone); }
+
+    @media (max-width: 600px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-credit { text-align: center; }
+    }
+
+    /* ── MISC ─────────────────────────────────────────────────── */
+    section { scroll-margin-top: 80px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NAV                                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<nav id="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-wordmark">Tina Nails <span>&amp; Spa</span></a>
+      <ul class="nav-links" role="list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#testimonies">Testimonies</a></li>
+        <li><a href="#location">Visit</a></li>
+      </ul>
+      <a href="tel:+16262424463" class="btn nav-cta">Call Now</a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" aria-label="Mobile navigation">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#testimonies">Testimonies</a>
+      <a href="#location">Visit Us</a>
+      <a href="tel:+16262424463" class="btn" style="align-self:flex-start;margin-top:0.4rem;">Call Now</a>
+    </nav>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HERO — SPLIT                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="hero" aria-label="Hero">
+  <div class="hero-left">
+    <p class="hero-kicker">Private · Serene · Glendale, CA</p>
+    <h1>A quiet place<br>for <em>beautiful</em><br>nails.</h1>
+    <p class="hero-tagline">
+      One client at a time. Tina brings twelve-plus years of artistry into a calm, private spa experience you won't find in any chain salon.
+    </p>
+    <div class="hero-actions">
+      <a href="tel:+16262424463" class="btn">Call to Book</a>
+      <a href="https://maps.google.com/?q=540+W+Colorado+St+UNIT+15,+Glendale,+CA+91204" target="_blank" rel="noopener" class="btn btn--outline" style="background:transparent;border:1.5px solid var(--eu);color:var(--eu);">Get Directions</a>
+    </div>
+    <p class="hero-note">540 W Colorado St #15 &nbsp;·&nbsp; Glendale, CA 91204</p>
+  </div>
+  <div class="hero-right" aria-hidden="true">
+    <div class="hero-photo hero-photo--main">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZP-qDJP4G-wgB6jVg8DfElwQjA1LMihKA-vwLVJ30P67kOG28y3C_iesNHNH0Kz7EK3HIz5xi4kGcfkv18zswFaArt-DsJovAOs2rqZsctjSJfDyAcHQ1oluBpBPyCrjeM0c-BrJlZENdToSj96q2X-KA=s4800-w1600"
+        alt="Tina Nails & Spa interior"
+        loading="eager"
+      />
+      <div class="hero-badge">Est. in Glendale</div>
+    </div>
+    <div class="hero-photo">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZPzCNwT4m_Zdg_PnQN-ExXRyR1XXRza0es6xKEWZEylCp27kaSfzJj-FgEI-n68eSPzl7RAaOrXa42wp9Hj-mwIPbnJy3_hpIJt0eicybe8sr57ThNT-3uf1a8b3Bfk9fAyCx-EcaCDAhxqj0zQAoj2oA=s4800-w1600"
+        alt="Nail detail"
+        loading="eager"
+      />
+    </div>
+    <div class="hero-photo">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZNIffLZ7V0d91duPS24NSDVmxFV4Ri3rQ53X02-97SzbhfJ9lHQFCvezFdFiKU_a_fBiHQmHeThBIgx252rKpnlUz8zjsBemvLgZchW32QCuG68htJqhLRgEB22uwspYqQEW4kViIq2Oc-CkFRQZuC4XQ=s4800-w1600"
+        alt="Spa ambiance"
+        loading="eager"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ABOUT                                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <p class="about-pull">
+          "She is kind, very detailed, and knows what she is doing in every aspect."
+        </p>
+        <div class="about-photo">
+          <img
+            src="https://lh3.googleusercontent.com/place-photos/AJRVUZNRCyrH2Bj2sgru_Ho6XU6ZokTkf5rxa2aE6dVj_DmtP0K2rN897-Bo9DwGZr5Ii4B23k6Yu3plyyPLokZ3b8uw3t7YaTq0X6n3Yc1S4m7g5Y2YVAPmbLqFGoL4x554K_jYTO-mkYNQeDIgaz8OlNEO=s4800-w1600"
+            alt="Spa detail"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="about-body">
+        <h2>One artist.<br>One client.<br>All the care.</h2>
+        <p>
+          Tina Nails &amp; Spa is a private, appointment-based nail salon tucked inside a clean, peaceful suite in Glendale, CA. There are no crowds, no noise, and no waiting — only Tina, her craft, and you.
+        </p>
+        <p>
+          With over a decade of devoted clientele, Tina has built a reputation for precision nail art, detailed care, and the kind of unhurried attention that keeps clients coming back for years — some for more than twelve.
+        </p>
+        <p>
+          Whether you're stepping in for a classic manicure or a full gel set with custom designs, every appointment is quiet, personal, and worth every minute.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SERVICES                                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div class="services-header">
+      <h2>Services &amp;<br>Treatments</h2>
+      <p class="services-sub">Every service delivered with full attention and care.</p>
+    </div>
+
+    <ul class="service-list" role="list">
+      <li class="service-item">
+        <div>
+          <div class="service-name">Classic Manicure</div>
+          <div class="service-desc">Shape, cuticle care, hand massage, and polish of your choice.</div>
+        </div>
+        <div class="service-price">From $25</div>
+        <span class="service-tag">Hands</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Gel Manicure</div>
+          <div class="service-desc">Long-lasting gel polish with a flawless, chip-resistant finish.</div>
+        </div>
+        <div class="service-price">From $40</div>
+        <span class="service-tag">Hands</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Acrylic Full Set</div>
+          <div class="service-desc">Custom acrylic extensions shaped and finished to your preference.</div>
+        </div>
+        <div class="service-price">From $55</div>
+        <span class="service-tag">Extensions</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Nail Art &amp; Custom Design</div>
+          <div class="service-desc">Any design or style — Tina's artistry adapts to your vision.</div>
+        </div>
+        <div class="service-price">Varies</div>
+        <span class="service-tag">Design</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Classic Pedicure</div>
+          <div class="service-desc">Soak, exfoliation, shaping, and polish in a relaxing private setting.</div>
+        </div>
+        <div class="service-price">From $40</div>
+        <span class="service-tag">Feet</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Spa Pedicure</div>
+          <div class="service-desc">Elevated pedicure with extended massage, scrub, and mask treatment.</div>
+        </div>
+        <div class="service-price">From $60</div>
+        <span class="service-tag">Feet</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Gel Pedicure</div>
+          <div class="service-desc">All the benefits of the spa pedicure, finished with long-lasting gel polish.</div>
+        </div>
+        <div class="service-price">From $65</div>
+        <span class="service-tag">Feet</span>
+      </li>
+      <li class="service-item">
+        <div>
+          <div class="service-name">Fill-Ins &amp; Maintenance</div>
+          <div class="service-desc">Regular upkeep to keep your set looking fresh between appointments.</div>
+        </div>
+        <div class="service-price">From $35</div>
+        <span class="service-tag">Upkeep</span>
+      </li>
+    </ul>
+
+    <div class="leaf-divider" style="margin-top:2.5rem;">
+      <span>&#10022;</span>
+    </div>
+    <p style="text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--sage);font-size:1rem;margin-top:0.5rem;">
+      Pricing confirmed at booking. Call Tina directly for custom inquiries.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MID-PAGE CTA BAND                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="cta-band">
+  <div class="container">
+    <div class="cta-band-inner">
+      <div class="cta-band-text">
+        <h2>Ready for your next appointment?</h2>
+        <p>Tina books one client at a time. Reach out early to secure your slot.</p>
+      </div>
+      <div class="cta-band-actions">
+        <a href="tel:+16262424463" class="btn btn--bark">Call (626) 242-4463</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- GALLERY STRIP                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="gallery" aria-label="Photo gallery">
+  <div class="gallery-strip">
+    <div class="gallery-cell">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZM-BwZvShl_5VV1uq-zg4xnERjYiBa4FFSFdGDJXz1Qx_w18rtPUhX1LiOb7Ot82LRWZWLIjRXx44PDaA4bPY6aDCg8HY-kJUoYNqlGpSrmmC6lX0dIKOfHQMLUzMFX1NLwIIZD-IJC19CdWl5m_RGP=s4800-w1600"
+        alt="Tina Nails gallery"
+        loading="lazy"
+      />
+    </div>
+    <div class="gallery-cell">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZNO-llifLcnQ_kHuHovMZTuO9ax54-Skkx7LczdGFvadDkWaFglA-DyrZX24Hyzg69gUZbhefZOwotQ6LtYBUVwHsR6VvC76pT9ehSRB96MPbPBs0kfAiL2LsB-bXmnQBL8D7iw5zD2pE2k_4nlVgtJgw=s4800-w1600"
+        alt="Nail art detail"
+        loading="lazy"
+      />
+    </div>
+    <div class="gallery-cell">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZPzCNwT4m_Zdg_PnQN-ExXRyR1XXRza0es6xKEWZEylCp27kaSfzJj-FgEI-n68eSPzl7RAaOrXa42wp9Hj-mwIPbnJy3_hpIJt0eicybe8sr57ThNT-3uf1a8b3Bfk9fAyCx-EcaCDAhxqj0zQAoj2oA=s4800-w1600"
+        alt="Spa atmosphere"
+        loading="lazy"
+      />
+    </div>
+    <div class="gallery-cell">
+      <img
+        src="https://lh3.googleusercontent.com/place-photos/AJRVUZNIffLZ7V0d91duPS24NSDVmxFV4Ri3rQ53X02-97SzbhfJ9lHQFCvezFdFiKU_a_fBiHQmHeThBIgx252rKpnlUz8zjsBemvLgZchW32QCuG68htJqhLRgEB22uwspYqQEW4kViIq2Oc-CkFRQZuC4XQ=s4800-w1600"
+        alt="Tina Nails interior"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TESTIMONIES                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="testimonies">
+  <div class="container">
+    <div class="test-header">
+      <h2>In Their Words</h2>
+      <p>From clients who keep coming back.</p>
+    </div>
+    <div class="test-scroll-wrap" role="region" aria-label="Customer testimonies">
+      <div class="test-track">
+
+        <article class="test-card">
+          <p class="test-quote">
+            "I love coming to get my nails done with Tina. She is so kind and attentive with her work. My nails always look incredible and her spa is very clean and private. I highly recommend going to Tina."
+          </p>
+          <span class="test-attr">Lucine P.</span>
+        </article>
+
+        <article class="test-card">
+          <p class="test-quote">
+            "Tina always does an amazing job! She is fast, efficient and ensures that her work is perfect. I enjoy the privacy of it just being one person at a time. Will definitely keep coming here for years to come!"
+          </p>
+          <span class="test-attr">Natalia E.</span>
+        </article>
+
+        <article class="test-card">
+          <p class="test-quote">
+            "Tina is an elite nail technician who I've been honored to have for 12 years. She is kind and very detailed and knows what she is doing in every aspect. Thank you Tina — I appreciate you very much!"
+          </p>
+          <span class="test-attr">Chela A.</span>
+        </article>
+
+        <article class="test-card">
+          <p class="test-quote">
+            "I've been seeing Tina for about 3 years now! She always fits me into her schedule and has really good pricing! Any design or style you need she can do! She never disappoints."
+          </p>
+          <span class="test-attr">M. N.</span>
+        </article>
+
+        <article class="test-card">
+          <p class="test-quote">
+            "I love going to Tina Nails and Spa. She always does a good job. She's fast and accurate with her work. I love her place — quiet and relaxing."
+          </p>
+          <span class="test-attr">Maricar Y.</span>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOURS & LOCATION                                            -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="location">
+  <div class="container">
+    <div class="loc-grid">
+      <div class="loc-left">
+        <h2>Visit the Studio</h2>
+        <p class="loc-address">540 W Colorado St, Unit 15</p>
+        <p class="loc-address" style="margin-bottom:1.2rem;">Glendale, CA 91204</p>
+        <a href="tel:+16262424463" class="loc-phone">(626) 242-4463</a>
+
+        <table class="hours-table" aria-label="Business hours">
+          <tbody>
+            <tr>
+              <td class="day">Monday – Friday</td>
+              <td class="time">9:00 am – 7:00 pm</td>
+            </tr>
+            <tr>
+              <td class="day">Saturday</td>
+              <td class="time">9:00 am – 6:00 pm</td>
+            </tr>
+            <tr>
+              <td class="day">Sunday</td>
+              <td class="time">10:00 am – 5:00 pm</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="loc-social">
+          <p class="loc-social-label">Find us on</p>
+          <div class="loc-social-links">
+            <a href="https://maps.google.com/?cid=14991099247293100390&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA" target="_blank" rel="noopener">Google</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <iframe
+          class="map-frame"
+          src="https://www.google.com/maps?q=540+W+Colorado+St+UNIT+15,+Glendale,+CA+91204&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Tina Nails &amp; Spa location map"
+          aria-label="Map showing Tina Nails &amp; Spa location"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FOOTER                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<footer id="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">Tina Nails &amp; Spa &mdash; Glendale, CA</span>
+      <p class="footer-credit">
+        Mockup designed by <a href="mailto:jcpeng2002@gmail.com">LJ Sites</a> &mdash;
+        interested in making this yours?
+        <a href="mailto:jcpeng2002@gmail.com">jcpeng2002@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* NAV: add scrolled class */
+  const nav = document.getElementById('site-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  /* MOBILE TOGGLE */
+  const toggle = document.querySelector('.nav-toggle');
+  const mobileNav = document.querySelector('.nav-mobile');
+  toggle.addEventListener('click', () => {
+    const open = mobileNav.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+  });
+
+  /* Close mobile nav on link click */
+  mobileNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+</body>
+</html>
